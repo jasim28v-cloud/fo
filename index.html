@@ -7,108 +7,167 @@
     <style>
         :root {
             --crimson: #990033;
+            --dark-crimson: #660022;
             --glass-bg: rgba(255, 255, 255, 0.1);
             --glass-border: rgba(255, 255, 255, 0.2);
         }
 
         body {
-            margin: 0; padding: 0;
-            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background: linear-gradient(135deg, #1a1a1a 0%, #4d001a 100%);
-            color: #fff; min-height: 100vh;
-            display: flex; justify-content: center; align-items: center;
+            background-attachment: fixed;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
         .glass-container {
-            width: 90%; max-width: 1100px;
+            width: 90%;
+            max-width: 1100px;
             background: var(--glass-bg);
             backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             border: 1px solid var(--glass-border);
-            border-radius: 20px; padding: 30px;
+            border-radius: 20px;
+            padding: 30px;
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+            margin: 20px;
         }
 
-        .main-layout { display: grid; grid-template-columns: 3fr 1fr; gap: 20px; }
+        h1 {
+            color: #ff4d88;
+            text-align: center;
+            font-weight: 300;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
 
-        /* إعلان الطبقة العلوية */
-        #ad-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); z-index: 100;
-            display: flex; justify-content: center; align-items: center;
+        .main-layout {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 850px) {
+            .main-layout { grid-template-columns: 1fr; }
+        }
+
+        /* منطقة مشغل الفيديو */
+        .video-player-section {
+            background: rgba(0, 0, 0, 0.4);
             border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
         }
 
-        .ad-content {
-            background: #fff; color: #000; padding: 20px; border-radius: 10px;
-            text-align: center; box-shadow: 0 0 20px #ff4d88;
+        video {
+            width: 100%;
+            display: block;
+            outline: none;
         }
 
-        .ad-link {
-            display: inline-block; background: #ff4d88; color: #fff;
-            padding: 10px 20px; text-decoration: none; border-radius: 5px;
-            margin-top: 10px; font-weight: bold;
+        .video-info {
+            padding: 15px;
+            background: rgba(153, 0, 51, 0.3);
         }
 
-        .video-player-section { position: relative; background: #000; border-radius: 15px; overflow: hidden; }
-        video { width: 100%; display: block; }
+        /* قائمة التشغيل الجانبية */
+        .playlist {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
 
-        .playlist { display: flex; flex-direction: column; gap: 12px; }
+        .playlist::-webkit-scrollbar { width: 5px; }
+        .playlist::-webkit-scrollbar-thumb { background: var(--crimson); border-radius: 10px; }
+
         .video-card {
-            background: rgba(255, 255, 255, 0.05); padding: 15px;
-            border-radius: 10px; cursor: pointer; transition: 0.3s;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .video-card:hover, .video-card.active { background: var(--crimson); }
 
-        @media (max-width: 850px) { .main-layout { grid-template-columns: 1fr; } }
+        .video-card:hover {
+            background: var(--crimson);
+            transform: translateX(-5px);
+        }
+
+        .video-card.active {
+            background: var(--crimson);
+            box-shadow: 0 0 15px rgba(153, 0, 51, 0.6);
+            border-color: #ff4d88;
+        }
+
+        .play-icon { font-size: 1.2rem; }
+
     </style>
 </head>
 <body>
 
 <div class="glass-container">
     <h1>المحتوى المرئي للعيادة</h1>
+
     <div class="main-layout">
         <div class="video-player-section">
-            <div id="ad-overlay">
-                <div class="ad-content">
-                    <p>المحتوى مغلق! اضغط للمشاهدة الآن</p>
-                    <a href="https://www.effectivegatecpm.com/bxwxuk2f39?key=566216691dc8b76a740840e94f68f44c" 
-                       target="_blank" onclick="closeAd()" class="ad-link">فتح الفيديو 🔓</a>
-                </div>
-            </div>
-
             <video id="mainVideo" controls poster="https://res.cloudinary.com/dssk5tabb/video/upload/02_nz4lq0.jpg">
                 <source id="videoSrc" src="https://res.cloudinary.com/dssk5tabb/video/upload/02_nz4lq0.mp4" type="video/mp4">
             </video>
+            <div class="video-info">
+                <span id="currentTitle">جارٍ التشغيل: فيديو تعريف 02</span>
+            </div>
         </div>
 
         <div class="playlist">
-            <div class="video-card active" onclick="playVid('02_nz4lq0', this)">▶ الحالة الأولى</div>
-            <div class="video-card" onclick="playVid('03_wic0ob', this)">▶ الحالة الثانية</div>
-            <div class="video-card" onclick="playVid('04_qeyknx', this)">▶ الحالة الثالثة</div>
+            <div class="video-card active" onclick="playVid('02_nz4lq0', 'فيديو تعريف 02', this)">
+                <span class="play-icon">▶</span> <span>الحالة الأولى</span>
+            </div>
+            <div class="video-card" onclick="playVid('03_wic0ob', 'فيديو توعوي 03', this)">
+                <span class="play-icon">▶</span> <span>الحالة الثانية</span>
+            </div>
+            <div class="video-card" onclick="playVid('04_qeyknx', 'شرح علاجي 04', this)">
+                <span class="play-icon">▶</span> <span>الحالة الثالثة</span>
+            </div>
+            <div class="video-card" onclick="playVid('05_ggqazk', 'نصيحة طبية 05', this)">
+                <span class="play-icon">▶</span> <span>الحالة الرابعة</span>
+            </div>
+            <div class="video-card" onclick="playVid('06_quce2q', 'خاتمة 06', this)">
+                <span class="play-icon">▶</span> <span>الحالة الخامسة</span>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    function closeAd() {
-        document.getElementById('ad-overlay').style.display = 'none';
-    }
-
-    function playVid(id, element) {
-        // تكتيك الظل: فتح إعلان عند كل تغيير فيديو
-        window.open('https://www.effectivegatecpm.com/bxwxuk2f39?key=566216691dc8b76a740840e94f68f44c', '_blank');
-        
+    function playVid(id, title, element) {
         const video = document.getElementById('mainVideo');
         const source = document.getElementById('videoSrc');
+        const titleLabel = document.getElementById('currentTitle');
+
+        // تحديث المصدر
         source.src = `https://res.cloudinary.com/dssk5tabb/video/upload/${id}.mp4`;
+        titleLabel.innerText = "جارٍ التشغيل: " + title;
+
+        // إعادة التشغيل
         video.load();
         video.play();
 
+        // تحديث التصميم النشط
         document.querySelectorAll('.video-card').forEach(card => card.classList.remove('active'));
         element.classList.add('active');
-        
-        // إعادة إظهار الإعلان بعد 30 ثانية لزيادة الربح
-        setTimeout(() => { document.getElementById('ad-overlay').style.display = 'flex'; }, 30000);
     }
 </script>
 
