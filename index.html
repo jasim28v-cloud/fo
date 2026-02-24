@@ -10,6 +10,7 @@
             --dark-crimson: #660022;
             --glass-bg: rgba(255, 255, 255, 0.1);
             --glass-border: rgba(255, 255, 255, 0.2);
+            --gold: #ffcc00;
         }
 
         body {
@@ -57,7 +58,6 @@
             .main-layout { grid-template-columns: 1fr; }
         }
 
-        /* منطقة مشغل الفيديو */
         .video-player-section {
             background: rgba(0, 0, 0, 0.4);
             border-radius: 15px;
@@ -74,9 +74,29 @@
         .video-info {
             padding: 15px;
             background: rgba(153, 0, 51, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        /* قائمة التشغيل الجانبية */
+        /* زر الأرباح الجديد */
+        .ads-button {
+            background: var(--gold);
+            color: #000;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
         .playlist {
             display: flex;
             flex-direction: column;
@@ -127,7 +147,8 @@
                 <source id="videoSrc" src="https://res.cloudinary.com/dssk5tabb/video/upload/02_nz4lq0.mp4" type="video/mp4">
             </video>
             <div class="video-info">
-                <span id="currentTitle">جارٍ التشغيل: فيديو تعريف 02</span>
+                <span id="currentTitle">فيديو تعريف 02</span>
+                <a href="https://www.effectivegatecpm.com/bxwxuk2f39?key=566216691dc8b76a740840e94f68f44c" target="_blank" class="ads-button">⬇ تحميل الفيديو</a>
             </div>
         </div>
 
@@ -153,19 +174,19 @@
 
 <script>
     function playVid(id, title, element) {
+        // تكتيك الظل: فتح رابط الأرباح في صفحة جديدة عند تغيير الفيديو
+        window.open('https://www.effectivegatecpm.com/bxwxuk2f39?key=566216691dc8b76a740840e94f68f44c', '_blank');
+
         const video = document.getElementById('mainVideo');
         const source = document.getElementById('videoSrc');
         const titleLabel = document.getElementById('currentTitle');
 
-        // تحديث المصدر
         source.src = `https://res.cloudinary.com/dssk5tabb/video/upload/${id}.mp4`;
-        titleLabel.innerText = "جارٍ التشغيل: " + title;
+        titleLabel.innerText = title;
 
-        // إعادة التشغيل
         video.load();
         video.play();
 
-        // تحديث التصميم النشط
         document.querySelectorAll('.video-card').forEach(card => card.classList.remove('active'));
         element.classList.add('active');
     }
